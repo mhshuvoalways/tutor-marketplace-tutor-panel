@@ -20,7 +20,7 @@ const authModel = new Schema(
     },
     role: {
       type: String,
-      default: "admin",
+      default: "tutor",
     },
   },
   {

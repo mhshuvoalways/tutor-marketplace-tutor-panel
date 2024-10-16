@@ -1,154 +1,349 @@
+"use client";
+
 import Button1 from "@/app/components/common/button/Button";
 import AutoComplete from "@/app/components/common/input/AutoComplete";
 import Input from "@/app/components/common/input/Input";
 import UserAccount from "@/app/components/myAccount/user";
+import { myAccountSchema } from "@/app/lib/validations/myAccount";
 import { MapPin, Video } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const methods = [
-  {
-    _id: 1,
-    name: "Online",
-  },
-  {
-    _id: 2,
-    name: "Offline",
-  },
-  {
-    _id: 3,
-    name: "Student place",
-  },
-  {
-    _id: 4,
-    name: "Tutor place",
-  },
-];
+const methods = ["Online", "Offline", "Student place", "Tutor place"];
 
-const grades = [
-  {
-    _id: 1,
-    name: "K-5",
-  },
-  {
-    _id: 2,
-    name: "6-8",
-  },
-  {
-    _id: 3,
-    name: "9-12",
-  },
-];
+const Index = () => {
+  const [grades, setGrades] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    bio: "",
+    hourlyRate: "",
+  });
+  const [location, setLocation] = useState("");
 
-const subjects = [
-  {
-    _id: 1,
-    name: "Science",
-  },
-  {
-    _id: 2,
-    name: "Math",
-  },
-  {
-    _id: 3,
-    name: "English",
-  },
-  {
-    _id: 4,
-    name: "Accounting",
-  },
-  {
-    _id: 5,
-    name: "Programming",
-  },
-];
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [selectedMethods, setSelectedMethods] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
 
-const index = () => {
+  const [gradesError, setGradesError] = useState("");
+  const [subjectsError, setSubjectsError] = useState("");
+  const [methodsError, setMethodsError] = useState("");
+  const [userInfoError, setUserInfoError] = useState({
+    name: "",
+    bio: "",
+    hourlyRate: "",
+  });
+  const [locationError, setLocationError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    async function fetchFunction() {
+      const response = await fetch("/api/grade", {
+        method: "GET",
+      });
+      setGrades(await response.json());
+    }
+    fetchFunction();
+  }, []);
+
+  useEffect(() => {
+    async function fetchFunction() {
+      const response = await fetch("/api/subject", {
+        method: "GET",
+      });
+      setSubjects(await response.json());
+    }
+    fetchFunction();
+  }, []);
+
+  const gradesSelectedHandler = (item) => {
+    setGradesError("");
+    const temp = [...selectedGrades];
+    const isSelected = temp.find((el) => el._id === item._id);
+    if (isSelected) {
+      const updatedTemp = temp.filter((el) => el._id !== item._id);
+      setSelectedGrades(updatedTemp);
+    } else {
+      setSelectedGrades([...temp, item]);
+    }
+  };
+
+  const subjectSelectedHandler = (item) => {
+    setSubjectsError("");
+    const temp = [...selectedSubjects];
+    const isSelected = temp.find((el) => el._id === item._id);
+    if (isSelected) {
+      const updatedTemp = temp.filter((el) => el._id !== item._id);
+      setSelectedSubjects(updatedTemp);
+    } else {
+      setSelectedSubjects([...temp, item]);
+    }
+  };
+
+  const methodsSelectedHandler = (item) => {
+    setMethodsError("");
+    const temp = [...selectedMethods];
+    const isSelected = temp.find((el) => el === item);
+    if (isSelected) {
+      const updatedTemp = temp.filter((el) => el !== item);
+      setSelectedMethods(updatedTemp);
+    } else {
+      setSelectedMethods([...temp, item]);
+    }
+  };
+
+  const onChangeHandler = (event) => {
+    setUserInfoError({
+      ...userInfoError,
+      [event.target.name]: "",
+    });
+    setUserInfo({
+      ...userInfo,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const addressHandler = (value) => {
+    setLocation(value);
+    setLocationError("");
+  };
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
+    setIsClicked(true);
+    setSuccessMessage("");
+    try {
+      const obj = {
+        name: userInfo.name,
+        bio: userInfo.bio,
+        location: location,
+        hourlyRate: Number(userInfo.hourlyRate),
+        grades: selectedGrades.map((el) => el._id),
+        subjects: selectedSubjects.map((el) => el._id),
+        availableOn: selectedMethods.map((el) => el),
+      };
+      myAccountSchema.parse(obj);
+      const response = await fetch("/api/myAccount", {
+        method: "POST",
+        body: JSON.stringify(obj),
+      });
+      setIsClicked(false);
+      if (response.status === 200) {
+        setSuccessMessage("Updated");
+      } else {
+        const result = await response.json();
+        setGradesError(result.grades);
+        setSubjectsError(result.subjects);
+        setMethodsError(result.availableOn);
+        setUserInfoError({
+          name: result.name,
+          bio: result.bio,
+          hourlyRate: result.hourlyRate,
+        });
+        setLocationError(result.location);
+      }
+    } catch (errors) {
+      setIsClicked(false);
+      const formattedErrors = errors?.issues?.reduce((acc, error) => {
+        acc[error.path[0]] = error.message;
+        return acc;
+      }, {});
+      setGradesError(formattedErrors.grades);
+      setSubjectsError(formattedErrors.subjects);
+      setMethodsError(formattedErrors.availableOn);
+      setUserInfoError({
+        name: formattedErrors.name,
+        bio: formattedErrors.bio,
+        hourlyRate: formattedErrors.hourlyRate,
+      });
+      setLocationError(formattedErrors.location);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchAccount() {
+      const response = await fetch("/api/myAccount", {
+        method: "GET",
+      });
+      const result = await response.json();
+      setSelectedGrades(result.grades);
+      setSelectedSubjects(result.subjects);
+      setSelectedMethods(result.availableOn);
+      setUserInfo({
+        name: result.name,
+        bio: result.bio,
+        hourlyRate: result.hourlyRate,
+      });
+      setLocation(result.location);
+    }
+    fetchAccount();
+  }, []);
+
   return (
     <div className="space-y-10">
       <UserAccount />
-      <div className="bg-white rounded shadow-sm p-5">
+      <form
+        className="bg-white rounded shadow-sm p-5"
+        onSubmit={onSubmitHandler}
+      >
         <p className="text-2xl">User information</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
           <div className="space-y-5">
             <div className="space-y-1">
               <label>Your Name</label>
-              <Input placeholder="John doe" />
+              <div>
+                <Input
+                  placeholder="John doe"
+                  name="name"
+                  value={userInfo.name}
+                  changeHandler={onChangeHandler}
+                />
+                {userInfoError.name && (
+                  <p className="text-red-400 text-left">{userInfoError.name}</p>
+                )}
+              </div>
             </div>
             <div className="space-y-1">
               <label>Your Location</label>
-              <AutoComplete />
+              <div>
+                <AutoComplete
+                  addressHandler={addressHandler}
+                  defaultValue={location}
+                />
+                {locationError && (
+                  <p className="text-red-400 text-left">{locationError}</p>
+                )}
+              </div>
             </div>
             <div className="space-y-1">
               <label>Your hourly rate</label>
-              <Input placeholder="34" type="number" />
+              <div>
+                <Input
+                  placeholder="34"
+                  type="number"
+                  name={"hourlyRate"}
+                  changeHandler={onChangeHandler}
+                  value={userInfo.hourlyRate}
+                />
+                {userInfoError.hourlyRate && (
+                  <p className="text-red-400 text-left">
+                    {userInfoError.hourlyRate}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="space-y-1">
               <label>Write yourself</label>
-              <textarea
-                placeholder="I am a professional math tutor with 4 years of ex..."
-                className="outline-0 border rounded py-2 px-2 w-full transition h-40"
-              />
+              <div>
+                <textarea
+                  placeholder="I am a professional math tutor with 4 years of ex..."
+                  className="outline-0 border rounded py-2 px-2 w-full transition h-40"
+                  name="bio"
+                  onChange={onChangeHandler}
+                  value={userInfo.bio}
+                />
+                {userInfoError.bio && (
+                  <p className="text-red-400 text-left">{userInfoError.bio}</p>
+                )}
+              </div>
             </div>
           </div>
           <div className="space-y-10">
             <div>
               <label>My grades</label>
               <div className="flex items-center flex-wrap gap-3 text-nowrap mt-1">
-                {grades.map((method) => (
-                  <div
-                    className="bg-slate-50 py-1 px-5 rounded cursor-pointer hover:bg-slate-200 transition"
-                    key={method._id}
-                  >
-                    <p>{method.name}</p>
-                  </div>
-                ))}
+                {grades.map((method) => {
+                  const isSelected = selectedGrades.find(
+                    (el) => el._id === method._id
+                  );
+                  return (
+                    <div
+                      className={`py-1 px-5 rounded cursor-pointer hover:bg-primary hover:text-white transition ${
+                        isSelected ? "bg-primary text-white" : "bg-slate-50"
+                      }`}
+                      key={method._id}
+                      onClick={() => gradesSelectedHandler(method)}
+                    >
+                      <p>{method.item}</p>
+                    </div>
+                  );
+                })}
               </div>
+              {gradesError && (
+                <p className="text-red-400 text-left">{gradesError}</p>
+              )}
             </div>
             <div>
               <label>My Subjects</label>
               <div className="flex items-center flex-wrap gap-3 text-nowrap mt-1">
-                {subjects.map((method) => (
-                  <div
-                    className="bg-slate-50 py-1 px-5 rounded cursor-pointer hover:bg-slate-200 transition"
-                    key={method._id}
-                  >
-                    <p>{method.name}</p>
-                  </div>
-                ))}
+                {subjects.map((method) => {
+                  const isSelected = selectedSubjects.find(
+                    (el) => el._id === method._id
+                  );
+                  return (
+                    <div
+                      className={`py-1 px-5 rounded cursor-pointer hover:bg-primary hover:text-white transition ${
+                        isSelected ? "bg-primary text-white" : "bg-slate-50"
+                      }`}
+                      key={method._id}
+                      onClick={() => subjectSelectedHandler(method)}
+                    >
+                      <p>{method.item}</p>
+                    </div>
+                  );
+                })}
               </div>
+              {subjectsError && (
+                <p className="text-red-400 text-left">{subjectsError}</p>
+              )}
             </div>
             <div>
               <label>Available on</label>
               <div className="flex items-center flex-wrap 2xl:flex-nowrap gap-3 text-nowrap mt-1">
-                {methods.map((method) => (
-                  <div
-                    className="inline-flex items-center justify-center gap-x-3 sm:gap-x-5 bg-slate-50 py-2 px-3 w-full rounded cursor-pointer hover:bg-slate-200 transition"
-                    key={method._id}
-                  >
-                    {method.name === "Online" && (
-                      <Video className="text-red-400" />
-                    )}
-                    {method.name === "Offline" && (
-                      <MapPin className="text-blue-400" />
-                    )}
-                    {method.name === "Tutor place" && (
-                      <MapPin className="text-red-400" />
-                    )}
-                    {method.name === "Student place" && (
-                      <MapPin className="text-red-400" />
-                    )}
-                    <p>{method.name}</p>
-                  </div>
-                ))}
+                {methods.map((method) => {
+                  const isSelected = selectedMethods.find(
+                    (el) => el === method
+                  );
+                  return (
+                    <div
+                      className={`inline-flex items-center justify-center gap-x-3 sm:gap-x-5 py-2 px-3 w-full rounded cursor-pointer hover:bg-primary hover:text-white transition ${
+                        isSelected ? "bg-primary text-white" : "bg-slate-50"
+                      }`}
+                      key={method}
+                      onClick={() => methodsSelectedHandler(method)}
+                    >
+                      {method === "Online" && (
+                        <Video className="text-red-400" />
+                      )}
+                      {method === "Offline" && (
+                        <MapPin className="text-blue-400" />
+                      )}
+                      {method === "Tutor place" && (
+                        <MapPin className="text-red-400" />
+                      )}
+                      {method === "Student place" && (
+                        <MapPin className="text-red-400" />
+                      )}
+                      <p>{method}</p>
+                    </div>
+                  );
+                })}
               </div>
+              {methodsError && (
+                <p className="text-red-400 text-left">{methodsError}</p>
+              )}
             </div>
           </div>
         </div>
         <div className="mt-5 w-32 ml-auto">
-          <Button1 title={"Change"} />
+          <Button1 title={"Change"} isClicked={isClicked} />
         </div>
-      </div>
+        {successMessage && (
+          <p className="text-green-400 text-center">{successMessage}</p>
+        )}
+      </form>
     </div>
   );
 };
 
-export default index;
+export default Index;
