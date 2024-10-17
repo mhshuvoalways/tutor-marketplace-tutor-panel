@@ -4,17 +4,17 @@ import Button1 from "@/app/components/common/button/Button";
 import Input from "@/app/components/common/input/Input";
 import UploadImage from "@/app/components/common/upload";
 import { passwordChangeSchema } from "@/app/lib/validations/auth";
-import StudentImage from "@/public/images/tutor.jpg";
 import Image from "next/image";
 import { useState } from "react";
 
-const Index = () => {
+const Index = ({ avatarUrl }) => {
   const [password, setPassword] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
 
+  const [changeSuccessAvatar, setChangeSuccessAvatar] = useState("");
   const [changeSuccess, setChangeSuccess] = useState("");
 
   const [userError, setUserError] = useState({
@@ -24,6 +24,10 @@ const Index = () => {
     message: "",
   });
 
+  const [image, setImage] = useState(null);
+  const [imageError, setImageError] = useState("");
+
+  const [isClickedAvatar, setIsClickedAvatar] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
   const changeHandler = async (event) => {
@@ -85,6 +89,57 @@ const Index = () => {
     }
   };
 
+  const imageHandler = (acceptedFiles) => {
+    setImage(acceptedFiles[0]);
+    setChangeSuccessAvatar("");
+    setImageError("");
+  };
+
+  const changeAvatar = async () => {
+    setIsClickedAvatar(true);
+    setChangeSuccessAvatar("");
+    setImageError("");
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "tutor-marketplace");
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/mhshuvoalways/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      if (response.status === 200) {
+        const data = await response.json();
+        const result = await fetch(`/api/myAccount`, {
+          method: "PUT",
+          body: JSON.stringify({
+            public_id: data.public_id,
+            url: data.url,
+          }),
+        });
+        if (result.status === 200) {
+          setChangeSuccessAvatar("Updated!");
+        } else {
+          setImageError("Server error occurred!");
+        }
+      } else {
+        setImageError("Server error occurred!");
+      }
+    } else {
+      setImageError("Upload an image!");
+    }
+    setIsClickedAvatar(false);
+  };
+
+  let src = "";
+  if (image) {
+    src = URL.createObjectURL(image);
+  } else if (avatarUrl) {
+    src = avatarUrl?.url;
+  }
+
   return (
     <div className="bg-white rounded shadow-sm p-5">
       <p className="text-2xl">Account</p>
@@ -92,16 +147,29 @@ const Index = () => {
         <div className="space-y-5">
           <div className="flex items-center gap-5 text-nowrap">
             <Image
-              src={StudentImage}
+              src={src}
               alt=""
               className="w-20 lg:size-40 rounded-full"
+              width={400}
+              height={400}
             />
             <div>
               <p className="text-2xl">MH Shuvo</p>
               <p className="text-gray-500">Max file size is 2 MB</p>
             </div>
           </div>
-          <UploadImage />
+          <UploadImage imageHandler={imageHandler} />
+          <Button1
+            title={"Save"}
+            onClick={changeAvatar}
+            isClicked={isClickedAvatar}
+          />
+          {imageError && (
+            <p className="text-red-400 text-center">{imageError}</p>
+          )}
+          {changeSuccessAvatar && (
+            <p className="text-green-400 text-center">{changeSuccessAvatar}</p>
+          )}
         </div>
         <div className="space-y-5">
           <p className="text-xl">User Password</p>

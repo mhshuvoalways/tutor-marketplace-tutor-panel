@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import Dropzone from "react-dropzone";
 
-const UploadImage = () => {
+const UploadImage = ({ imageHandler }) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragEnter = () => {
@@ -16,8 +16,9 @@ const UploadImage = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = () => {
+  const handleDrop = (acceptedFiles) => {
     setIsDragging(false);
+    imageHandler(acceptedFiles);
   };
 
   return (

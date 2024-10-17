@@ -9,26 +9,22 @@ const profileModel = new Schema(
     },
     avatar: {
       url: String,
-      publicId: String,
+      public_id: String,
     },
     name: {
       type: String,
-      required: true,
       trim: true,
     },
     bio: {
       type: String,
-      required: true,
       trim: true,
     },
     location: {
       type: String,
-      required: true,
       trim: true,
     },
     hourlyRate: {
       type: Number,
-      required: true,
     },
     grades: [
       {

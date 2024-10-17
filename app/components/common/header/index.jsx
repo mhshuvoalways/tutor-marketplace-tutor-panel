@@ -3,9 +3,11 @@
 import AvatarPhoto from "@/app/components/common/header/Avatar";
 import DropDown from "@/app/components/common/headlessui/Dropdown";
 import Sidebar from "@/app/components/common/sidebar";
+import { getMyAccount } from "@/app/lib/store/features/myAccountSlice";
+import { useAppDispatch, useAppSelector } from "@/app/lib/store/hook";
 import { LogOut, Menu, Settings } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const profileMenus = [
   {
@@ -24,6 +26,13 @@ const profileMenus = [
 
 const Index = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const dispatch = useAppDispatch();
+
+  const { data } = useAppSelector((store) => store.myAccount);
+
+  useEffect(() => {
+    dispatch(getMyAccount());
+  }, [dispatch]);
 
   return (
     <div className="flex">
@@ -42,7 +51,11 @@ const Index = ({ children }) => {
               onClick={() => setIsOpen(!isOpen)}
             />
             <div className="flex items-center gap-5">
-              <DropDown btnIcon={<AvatarPhoto />} items={profileMenus} />
+              <DropDown
+                btnIcon={<AvatarPhoto data={data} />}
+                items={profileMenus}
+                data={data}
+              />
               <div>
                 <p className="text-sm">Balance</p>
                 <p className="text-green-600 text-end font-semibold">$400</p>

@@ -10,7 +10,6 @@ const authModel = new Schema(
     },
     password: {
       type: String,
-      required: true,
       min: 6,
       max: 20,
     },
@@ -21,6 +20,9 @@ const authModel = new Schema(
     role: {
       type: String,
       default: "tutor",
+    },
+    provider: {
+      type: String,
     },
   },
   {

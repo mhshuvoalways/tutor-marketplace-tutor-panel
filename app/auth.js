@@ -1,3 +1,4 @@
+import { loginCredential } from "@/app/actions/loginCredential";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -33,4 +34,16 @@ export const {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, account }) {
+      if (token && account !== "credentials") {
+        loginCredential(token);
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.provider = token.provider;
+      return session;
+    },
+  },
 });

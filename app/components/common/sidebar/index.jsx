@@ -1,5 +1,12 @@
+import { logout } from "@/app/actions";
 import LogoImage from "@/public/images/logo.png";
-import { Calendar, Home, LogOut, Settings, BadgeDollarSign } from "lucide-react";
+import {
+  BadgeDollarSign,
+  Calendar,
+  Home,
+  LogOut,
+  Settings,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,12 +35,6 @@ const menus = [
     icon: Settings,
     name: "My Account",
     href: "/my-account",
-  },
-  {
-    id: 3,
-    icon: LogOut,
-    name: "Logout",
-    href: "/login",
   },
 ];
 
@@ -76,6 +77,19 @@ const Index = ({ isOpen }) => {
               </Link>
             );
           })}
+          <div
+            className={`flex items-center gap-2 p-2 h-9 hover:text-primary cursor-pointer ${
+              !isOpen && "justify-center size-9"
+            }`}
+            onClick={() => logout()}
+          >
+            {<LogOut className="size-5" />}
+            {isOpen && (
+              <p className="overflow-x-hidden font-medium hidden sm:block">
+                Logout
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

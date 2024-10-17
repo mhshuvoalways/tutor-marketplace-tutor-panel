@@ -1,4 +1,5 @@
 import { dbConnect } from "@/app/services/mongodb";
+import StoreProvider from "@/app/StoreProvider";
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
@@ -26,7 +27,9 @@ export default async function RootLayout({
           href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css"
         />
       </head>
-      <body className={`${outfit.className} bg-[#F7F8FC]`}>{children}</body>
+      <body className={`${outfit.className} bg-[#F7F8FC]`}>
+        <StoreProvider>{children}</StoreProvider>
+      </body>
     </html>
   );
 }

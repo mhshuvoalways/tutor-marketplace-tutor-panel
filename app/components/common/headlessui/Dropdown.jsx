@@ -1,4 +1,4 @@
-import TutorImage from "@/public/images/tutor.jpg";
+import { logout } from "@/app/actions";
 import {
   Menu,
   MenuButton,
@@ -9,11 +9,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-const Dropdown = ({ btnIcon, items }) => {
-  const logoutHandler = () => {
-    localStorage.clear();
-  };
-
+const Dropdown = ({ btnIcon, items, data }) => {
   return (
     <Menu>
       <MenuButton>{btnIcon}</MenuButton>
@@ -30,12 +26,18 @@ const Dropdown = ({ btnIcon, items }) => {
           className={`z-20 bg-white shadow rounded p-2 mt-3`}
         >
           <div className="flex items-center gap-x-5 p-2 border-b">
-            <Image src={TutorImage} alt="" className="size-10 rounded-full" />
+            <Image
+              src={data?.avatar.url}
+              alt=""
+              className="size-10 rounded-full"
+              width={200}
+              height={200}
+            />
             <div>
-              <p className="text-lg">MH Shuvo</p>
+              <p className="text-lg">{data?.name}</p>
               <div className="flex items-center gap-2">
                 <p className="opacity-80 text-sm font-medium break-all">
-                  mhshuvoalways@gmail.com
+                  {data?.email}
                 </p>
               </div>
             </div>
@@ -46,8 +48,8 @@ const Dropdown = ({ btnIcon, items }) => {
                 <MenuItem>
                   {item.name === "Logout" ? (
                     <p
-                      onClick={logoutHandler}
                       className="cursor-pointer flex items-center gap-3 hover:text-primary transition p-2"
+                      onClick={() => logout()}
                     >
                       {item.icon}
                       {item.name}

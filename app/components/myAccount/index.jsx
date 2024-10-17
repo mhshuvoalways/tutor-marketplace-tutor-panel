@@ -4,6 +4,7 @@ import Button1 from "@/app/components/common/button/Button";
 import AutoComplete from "@/app/components/common/input/AutoComplete";
 import Input from "@/app/components/common/input/Input";
 import UserAccount from "@/app/components/myAccount/user";
+import { useAppSelector } from "@/app/lib/store/hook";
 import { myAccountSchema } from "@/app/lib/validations/myAccount";
 import { MapPin, Video } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ const Index = () => {
     hourlyRate: "",
   });
   const [location, setLocation] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
@@ -35,6 +37,8 @@ const Index = () => {
   });
   const [locationError, setLocationError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const { data } = useAppSelector((store) => store.myAccount);
 
   useEffect(() => {
     async function fetchFunction() {
@@ -161,27 +165,23 @@ const Index = () => {
   };
 
   useEffect(() => {
-    async function fetchAccount() {
-      const response = await fetch("/api/myAccount", {
-        method: "GET",
-      });
-      const result = await response.json();
-      setSelectedGrades(result.grades);
-      setSelectedSubjects(result.subjects);
-      setSelectedMethods(result.availableOn);
+    if (data) {
+      setSelectedGrades(data.grades);
+      setSelectedSubjects(data.subjects);
+      setSelectedMethods(data.availableOn);
       setUserInfo({
-        name: result.name,
-        bio: result.bio,
-        hourlyRate: result.hourlyRate,
+        name: data.name,
+        bio: data.bio,
+        hourlyRate: data.hourlyRate,
       });
-      setLocation(result.location);
+      setLocation(data.location);
+      setAvatarUrl(data?.avatar);
     }
-    fetchAccount();
-  }, []);
+  }, [data]);
 
   return (
     <div className="space-y-10">
-      <UserAccount />
+      <UserAccount avatarUrl={avatarUrl} />
       <form
         className="bg-white rounded shadow-sm p-5"
         onSubmit={onSubmitHandler}
@@ -253,7 +253,7 @@ const Index = () => {
               <label>My grades</label>
               <div className="flex items-center flex-wrap gap-3 text-nowrap mt-1">
                 {grades.map((method) => {
-                  const isSelected = selectedGrades.find(
+                  const isSelected = selectedGrades?.find(
                     (el) => el._id === method._id
                   );
                   return (
@@ -277,7 +277,7 @@ const Index = () => {
               <label>My Subjects</label>
               <div className="flex items-center flex-wrap gap-3 text-nowrap mt-1">
                 {subjects.map((method) => {
-                  const isSelected = selectedSubjects.find(
+                  const isSelected = selectedSubjects?.find(
                     (el) => el._id === method._id
                   );
                   return (
@@ -301,7 +301,7 @@ const Index = () => {
               <label>Available on</label>
               <div className="flex items-center flex-wrap 2xl:flex-nowrap gap-3 text-nowrap mt-1">
                 {methods.map((method) => {
-                  const isSelected = selectedMethods.find(
+                  const isSelected = selectedMethods?.find(
                     (el) => el === method
                   );
                   return (
