@@ -1,8 +1,8 @@
 import { signInSchema } from "@/app/lib/validations/auth";
 import AuthModel from "@/app/models/AuthModel";
+import { dbConnect } from "@/app/services/mongodb";
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
-import { dbConnect } from "@/app/services/mongodb";
 
 export const POST = async (request) => {
   try {
@@ -14,7 +14,7 @@ export const POST = async (request) => {
       const user = await AuthModel.findOne({
         email,
       });
-      if (user) {
+      if (user && user.provider === "credential") {
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
           return new NextResponse(JSON.stringify(user), { status: 200 });
@@ -31,7 +31,7 @@ export const POST = async (request) => {
           status: 400,
         });
       }
-    } catch {        
+    } catch {
       return new NextResponse(
         JSON.stringify({ message: "Server error occured" }),
         {

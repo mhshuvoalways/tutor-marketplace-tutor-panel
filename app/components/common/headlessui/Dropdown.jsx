@@ -26,13 +26,21 @@ const Dropdown = ({ btnIcon, items, data }) => {
           className={`z-20 bg-white shadow rounded p-2 mt-3`}
         >
           <div className="flex items-center gap-x-5 p-2 border-b">
-            <Image
-              src={data?.avatar.url}
-              alt=""
-              className="size-10 rounded-full"
-              width={200}
-              height={200}
-            />
+            {data?.avatar?.url ? (
+              <Image
+                src={data?.avatar?.url}
+                alt=""
+                className="size-10 rounded-full"
+                width={200}
+                height={200}
+              />
+            ) : (
+              <p
+                className={`rounded-full bg-primary text-white flex items-center justify-center size-10 `}
+              >
+                {data?.name?.split("")[0]}
+              </p>
+            )}
             <div>
               <p className="text-lg">{data?.name}</p>
               <div className="flex items-center gap-2">

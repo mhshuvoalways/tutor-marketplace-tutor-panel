@@ -9,7 +9,7 @@ import {
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 
-function ListboxComponent({ items }) {
+function ListboxComponent({ items, availabilityHandler, time }) {
   const [selected, setSelected] = useState(items[0]);
 
   return (
@@ -30,6 +30,7 @@ function ListboxComponent({ items }) {
             key={item}
             value={item}
             className="group flex cursor-pointer items-center gap-2 rounded py-1.5 px-3 hover:bg-gray-100"
+            onClick={() => availabilityHandler(time, item)}
           >
             <CheckIcon className="invisible size-4 group-data-[selected]:visible" />
             <p>{item}</p>

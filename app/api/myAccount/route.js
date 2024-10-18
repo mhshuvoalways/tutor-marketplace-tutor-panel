@@ -51,12 +51,13 @@ export const GET = async () => {
     const response = await TutorProfileModel.findOne({
       user: authResponse._id,
     })
-      .populate("grades")
-      .populate("subjects");
+    .populate("grades")
+    .populate("subjects");
     const obj = {
       ...response._doc,
       email: authResponse.email,
     };
+    
     return new NextResponse(JSON.stringify(obj), { status: 200 });
   } catch {
     return new NextResponse(

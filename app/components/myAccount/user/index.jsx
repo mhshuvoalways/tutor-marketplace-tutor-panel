@@ -3,11 +3,12 @@
 import Button1 from "@/app/components/common/button/Button";
 import Input from "@/app/components/common/input/Input";
 import UploadImage from "@/app/components/common/upload";
+import { useAppSelector } from "@/app/lib/store/hook";
 import { passwordChangeSchema } from "@/app/lib/validations/auth";
 import Image from "next/image";
 import { useState } from "react";
 
-const Index = ({ avatarUrl }) => {
+const Index = () => {
   const [password, setPassword] = useState({
     currentPassword: "",
     newPassword: "",
@@ -29,6 +30,8 @@ const Index = ({ avatarUrl }) => {
 
   const [isClickedAvatar, setIsClickedAvatar] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+
+  const { data } = useAppSelector((store) => store.myAccount);
 
   const changeHandler = async (event) => {
     setPassword({
@@ -136,8 +139,8 @@ const Index = ({ avatarUrl }) => {
   let src = "";
   if (image) {
     src = URL.createObjectURL(image);
-  } else if (avatarUrl) {
-    src = avatarUrl?.url;
+  } else if (data?.avatar?.url) {
+    src = data?.avatar?.url;
   }
 
   return (
@@ -146,15 +149,23 @@ const Index = ({ avatarUrl }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 items-end mt-10">
         <div className="space-y-5">
           <div className="flex items-center gap-5 text-nowrap">
-            <Image
-              src={src}
-              alt=""
-              className="w-20 lg:size-40 rounded-full"
-              width={400}
-              height={400}
-            />
+            {src ? (
+              <Image
+                src={src}
+                alt=""
+                className="w-20 lg:size-40 rounded-full"
+                width={400}
+                height={400}
+              />
+            ) : (
+              <p
+                className={`rounded-full bg-primary text-white flex items-center justify-center size-20 lg:size-40 text-2xl lg:text-7xl`}
+              >
+                {data?.name?.split("")[0]}
+              </p>
+            )}
             <div>
-              <p className="text-2xl">MH Shuvo</p>
+              <p className="text-2xl">{data?.name}</p>
               <p className="text-gray-500">Max file size is 2 MB</p>
             </div>
           </div>

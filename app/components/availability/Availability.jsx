@@ -1,6 +1,6 @@
 import { CircleMinus, CirclePlus } from "lucide-react";
 
-const index = ({ setIsOpen }) => {
+const index = ({ avail, setIsOpen, availabilityDayHandler, deleteHandler }) => {
   return (
     <div className="bg-white rounded shadow-sm p-5 overflow-x-auto">
       <table className="w-full text-nowrap">
@@ -12,279 +12,39 @@ const index = ({ setIsOpen }) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="text-left py-5 px-5 align-top">Saturday</td>
-            <td className="text-left py-5 px-5 align-top">
-              <div className="space-y-3">
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>11:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
+          {avail.map((el, index) => (
+            <tr key={index}>
+              <td className="text-left py-5 px-5 align-top">{el.day}</td>
+              <td className="text-left py-5 px-5 align-top">
+                <div className="space-y-3">
+                  {el.time.map((t, index) => (
+                    <div className="flex items-center gap-5" key={index}>
+                      <div className="flex items-center gap-2">
+                        <p>{t.startedTime}</p>
+                        <p>-</p>
+                        <p>{t.endedTime}</p>
+                      </div>
+                      <CircleMinus
+                        className="cursor-pointer hover:text-primary"
+                        onClick={() => deleteHandler(t._id)}
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>4:00</p>
-                    <p>-</p>
-                    <p>5:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
+              </td>
+              <td className="text-left py-5 px-5 align-top">
+                <div
+                  className="flex items-center gap-5"
+                  onClick={() => {
+                    availabilityDayHandler(el.day);
+                    setIsOpen(true);
+                  }}
+                >
+                  <CirclePlus className="cursor-pointer hover:text-primary" />
                 </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>10:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-              </div>
-            </td>
-            <td className="text-left py-5 px-5 align-top">
-              <div
-                className="flex items-center gap-5"
-                onClick={() => setIsOpen(true)}
-              >
-                <CirclePlus className="cursor-pointer hover:text-primary" />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="text-left py-5 px-5 align-top">Sunday</td>
-            <td className="text-left py-5 px-5 align-top">
-              <div className="space-y-3">
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>11:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>4:00</p>
-                    <p>-</p>
-                    <p>5:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>10:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-              </div>
-            </td>
-            <td className="text-left py-5 px-5 align-top">
-              <div
-                className="flex items-center gap-5"
-                onClick={() => setIsOpen(true)}
-              >
-                <CirclePlus className="cursor-pointer hover:text-primary" />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="text-left py-5 px-5 align-top">Monday</td>
-            <td className="text-left py-5 px-5 align-top">
-              <div className="space-y-3">
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>11:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>4:00</p>
-                    <p>-</p>
-                    <p>5:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>10:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-              </div>
-            </td>
-            <td className="text-left py-5 px-5 align-top">
-              <div
-                className="flex items-center gap-5"
-                onClick={() => setIsOpen(true)}
-              >
-                <CirclePlus className="cursor-pointer hover:text-primary" />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="text-left py-5 px-5 align-top">Tuesday</td>
-            <td className="text-left py-5 px-5 align-top">
-              <div className="space-y-3">
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>11:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>4:00</p>
-                    <p>-</p>
-                    <p>5:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>10:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-              </div>
-            </td>
-            <td className="text-left py-5 px-5 align-top">
-              <div
-                className="flex items-center gap-5"
-                onClick={() => setIsOpen(true)}
-              >
-                <CirclePlus className="cursor-pointer hover:text-primary" />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="text-left py-5 px-5 align-top">Wedneyday</td>
-            <td className="text-left py-5 px-5 align-top">
-              <div className="space-y-3">
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>11:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>4:00</p>
-                    <p>-</p>
-                    <p>5:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>10:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-              </div>
-            </td>
-            <td className="text-left py-5 px-5 align-top">
-              <div
-                className="flex items-center gap-5"
-                onClick={() => setIsOpen(true)}
-              >
-                <CirclePlus className="cursor-pointer hover:text-primary" />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="text-left py-5 px-5 align-top">Thursday</td>
-            <td className="text-left py-5 px-5 align-top">
-              <div className="space-y-3">
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>11:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>4:00</p>
-                    <p>-</p>
-                    <p>5:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>10:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-              </div>
-            </td>
-            <td className="text-left py-5 px-5 align-top">
-              <div
-                className="flex items-center gap-5"
-                onClick={() => setIsOpen(true)}
-              >
-                <CirclePlus className="cursor-pointer hover:text-primary" />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="text-left py-5 px-5 align-top">Friday</td>
-            <td className="text-left py-5 px-5 align-top">
-              <div className="space-y-3">
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>11:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>4:00</p>
-                    <p>-</p>
-                    <p>5:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-                <div className="flex items-centerg gap-5">
-                  <div className="flex items-centerg gap-2 w-28">
-                    <p>9:00</p>
-                    <p>-</p>
-                    <p>10:00</p>
-                  </div>
-                  <CircleMinus className="cursor-pointer hover:text-primary" />
-                </div>
-              </div>
-            </td>
-            <td className="text-left py-5 px-5 align-top">
-              <div
-                className="flex items-center gap-5"
-                onClick={() => setIsOpen(true)}
-              >
-                <CirclePlus className="cursor-pointer hover:text-primary" />
-              </div>
-            </td>
-          </tr>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

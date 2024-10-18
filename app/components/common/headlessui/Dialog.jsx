@@ -1,16 +1,16 @@
 import Button1 from "@/app/components/common/button/Button";
-import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
 export default function MyModal({
-  dialogBtn,
   isOpen,
   setIsOpen,
   dialogTitle,
+  submitHandler,
   children,
+  isClicked,
 }) {
   return (
     <>
-      <Button onClick={() => setIsOpen(!isOpen)}>{dialogBtn}</Button>
       <Dialog
         open={isOpen}
         as="div"
@@ -31,9 +31,9 @@ export default function MyModal({
               </DialogTitle>
               <div className="mt-5">{children}</div>
               <div className="flex justify-end mt-5">
-                <Button onClick={() => setIsOpen(!isOpen)}>
-                  <Button1 title={"Add"} />
-                </Button>
+                <div onClick={submitHandler}>
+                  <Button1 title={"Add"} isClicked={isClicked} />
+                </div>
               </div>
             </DialogPanel>
           </div>

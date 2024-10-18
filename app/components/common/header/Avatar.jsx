@@ -3,7 +3,7 @@ import Image from "next/image";
 const UserAvatar = ({ data }) => {
   return (
     <>
-      {data?.avatar ? (
+      {data?.avatar?.url ? (
         <Image
           src={data?.avatar?.url}
           className={`rounded-full bg-slate-100 border-primary border size-7 lg:size-9`}
@@ -15,7 +15,7 @@ const UserAvatar = ({ data }) => {
         <p
           className={`rounded-full bg-primary border text-white flex items-center justify-center size-7 lg:size-9 `}
         >
-          {data?.name.slice(0, 1)}
+          {data?.name?.split("")[0]}
         </p>
       )}
     </>

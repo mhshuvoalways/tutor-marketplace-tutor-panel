@@ -20,7 +20,6 @@ const Index = () => {
     hourlyRate: "",
   });
   const [location, setLocation] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState(null);
 
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
@@ -121,7 +120,7 @@ const Index = () => {
         name: userInfo.name,
         bio: userInfo.bio,
         location: location,
-        hourlyRate: Number(userInfo.hourlyRate),
+        hourlyRate: Number(userInfo.hourlyRate || 0),
         grades: selectedGrades.map((el) => el._id),
         subjects: selectedSubjects.map((el) => el._id),
         availableOn: selectedMethods.map((el) => el),
@@ -175,13 +174,12 @@ const Index = () => {
         hourlyRate: data.hourlyRate,
       });
       setLocation(data.location);
-      setAvatarUrl(data?.avatar);
     }
   }, [data]);
 
   return (
     <div className="space-y-10">
-      <UserAccount avatarUrl={avatarUrl} />
+      <UserAccount />
       <form
         className="bg-white rounded shadow-sm p-5"
         onSubmit={onSubmitHandler}

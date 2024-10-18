@@ -1,6 +1,6 @@
 import { signUpSchema } from "@/app/lib/validations/auth";
-import TutorProfileModel from "@/app/models/ProfileModel";
 import AuthModel from "@/app/models/AuthModel";
+import TutorProfileModel from "@/app/models/ProfileModel";
 import { dbConnect } from "@/app/services/mongodb";
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
@@ -18,6 +18,7 @@ export const POST = async (request) => {
         const userObj = {
           email,
           password: hashed,
+          provider: "credential",
         };
         const auth = await new AuthModel(userObj).save();
         const profileObj = {

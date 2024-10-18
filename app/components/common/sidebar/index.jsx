@@ -3,6 +3,7 @@ import LogoImage from "@/public/images/logo.png";
 import {
   BadgeDollarSign,
   Calendar,
+  CalendarDays,
   Home,
   LogOut,
   Settings,
@@ -17,6 +18,12 @@ const menus = [
     icon: Home,
     name: "Home",
     href: "/",
+  },
+  {
+    id: 11,
+    icon: CalendarDays,
+    name: "Booking",
+    href: "/booking",
   },
   {
     id: 2,
