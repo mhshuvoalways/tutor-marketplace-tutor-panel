@@ -6,6 +6,9 @@ export const getMyAccount = createAsyncThunk(
     try {
       const response = await fetch("/api/myAccount", {
         method: "GET",
+        headers: {
+          "content-type": "application/json",
+        },
       });
       return await response.json();
     } catch {

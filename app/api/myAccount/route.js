@@ -1,7 +1,9 @@
 import { authConfig } from "@/app/auth.config";
 import cloudinary from "@/app/config/cloudinary";
 import AuthModel from "@/app/models/AuthModel";
+import "@/app/models/GradeModel";
 import TutorProfileModel from "@/app/models/ProfileModel";
+import "@/app/models/SubjectModel";
 import { dbConnect } from "@/app/services/mongodb";
 import Cloudinary from "cloudinary";
 import NextAuth from "next-auth";
@@ -51,17 +53,16 @@ export const GET = async () => {
     const response = await TutorProfileModel.findOne({
       user: authResponse._id,
     })
-    .populate("grades")
-    .populate("subjects");
+      .populate("grades")
+      .populate("subjects");
     const obj = {
       ...response._doc,
       email: authResponse.email,
     };
-    
     return new NextResponse(JSON.stringify(obj), { status: 200 });
   } catch {
     return new NextResponse(
-      JSON.stringify({ message: "Server error occured!" }),
+      JSON.stringify({ message: "Server error occurred!" }),
       { status: 500 }
     );
   }
