@@ -34,8 +34,8 @@ const menus = [
   {
     id: 4,
     icon: BadgeDollarSign,
-    name: "Withdraw req.",
-    href: "/withdraw-requests",
+    name: "Manage Money",
+    href: "/manage-money",
   },
   {
     id: 5,

@@ -14,8 +14,16 @@ export const POST = async (request) => {
   const { auth } = NextAuth(authConfig);
   const session = await auth();
   const email = session.user.email;
-  const { name, bio, location, hourlyRate, grades, subjects, availableOn } =
-    await request.json();
+  const {
+    name,
+    bio,
+    location,
+    hourlyRate,
+    grades,
+    subjects,
+    availableOn,
+    gender,
+  } = await request.json();
   try {
     const profileObj = {
       name,
@@ -25,6 +33,7 @@ export const POST = async (request) => {
       grades,
       subjects,
       availableOn,
+      gender,
     };
     const authResponse = await AuthModel.findOne({ email });
     const response = await TutorProfileModel.findOneAndUpdate(
@@ -57,6 +66,7 @@ export const GET = async () => {
       .populate("subjects");
     const obj = {
       ...response._doc,
+      provider: authResponse.provider,
       email: authResponse.email,
     };
     return new NextResponse(JSON.stringify(obj), { status: 200 });

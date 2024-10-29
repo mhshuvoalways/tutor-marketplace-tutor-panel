@@ -50,7 +50,7 @@ const SignIn = () => {
       }
     } catch (errors) {
       setIsClicked(false);
-      const formattedErrors = errors?.issues?.reduce((acc, error) => {
+      const formattedErrors = errors.issues.reduce((acc, error) => {
         acc[error.path[0]] = error.message;
         return acc;
       }, {});
@@ -77,8 +77,8 @@ const SignIn = () => {
                 className="bg-white/90 focus:border-gray-500"
                 changeHandler={changeHandler}
               />
-              {userError?.email && (
-                <p className="text-red-400 text-left">{userError?.email}</p>
+              {userError.email && (
+                <p className="text-red-400 text-left">{userError.email}</p>
               )}
             </div>
             <div>
@@ -89,8 +89,8 @@ const SignIn = () => {
                 className="bg-white/90 focus:border-gray-500"
                 changeHandler={changeHandler}
               />
-              {userError?.password && (
-                <p className="text-red-400 text-left">{userError?.password}</p>
+              {userError.password && (
+                <p className="text-red-400 text-left">{userError.password}</p>
               )}
             </div>
             <div className="flex justify-between gap-2">
@@ -124,8 +124,8 @@ const SignIn = () => {
               <Image src={GoogleIcon} alt="" className="size-5" />
               <button>Login with google</button>
             </div>
-            {userError?.message && (
-              <p className="text-red-400 text-center">{userError?.message}</p>
+            {userError.message && (
+              <p className="text-red-400 text-center">{userError.message}</p>
             )}
           </div>
         </div>

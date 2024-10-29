@@ -1,12 +1,14 @@
 "use client";
 
-import { credentialLogin, socialLogin } from "@/app/actions";
+import { socialLogin } from "@/app/actions";
 import Button from "@/app/components/common/button/Button";
 import Input from "@/app/components/common/input/Input";
+import { signUpSchema } from "@/app/lib/validations/auth";
 import GoogleIcon from "@/public/icons/google.png";
 import LoginImage from "@/public/images/login.png";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const SignUpPage = () => {
@@ -23,6 +25,10 @@ const SignUpPage = () => {
     message: "",
   });
 
+  const [isClicked, setIsClicked] = useState(false);
+
+  const router = useRouter();
+
   const changeHandler = (event) => {
     setUser({
       ...user,
@@ -31,7 +37,9 @@ const SignUpPage = () => {
   };
 
   const submitHandler = async () => {
+    setIsClicked(true);
     try {
+      await signUpSchema.parseAsync(user);
       const response = await fetch(`/api/signup`, {
         method: "POST",
         headers: {
@@ -39,13 +47,19 @@ const SignUpPage = () => {
         },
         body: JSON.stringify(user),
       });
+      setIsClicked(false);
       if (response.status === 200) {
-        await credentialLogin(user);
+        router.push("/login");
       } else {
         setUserError(await response.json());
       }
-    } catch (e) {
-      console.error(e.message);
+    } catch (errors) {
+      setIsClicked(false);
+      const formattedErrors = errors.issues.reduce((acc, error) => {
+        acc[error.path[0]] = error.message;
+        return acc;
+      }, {});
+      setUserError(formattedErrors);
     }
   };
 
@@ -106,7 +120,12 @@ const SignUpPage = () => {
                 forgot password?
               </Link>
             </div>
-            <Button title={"SignUp"} icon onClick={submitHandler} />
+            <Button
+              title={"SignUp"}
+              icon
+              onClick={submitHandler}
+              isClicked={isClicked}
+            />
             <div className="flex items-center gap-x-2">
               <p className="border w-full" />
               <p className="font-semibold">OR</p>

@@ -1,25 +1,24 @@
 import { z } from "zod";
 
 export const myAccountSchema = z.object({
-  name: z
-    .string({ required_error: "Name is required" })
-    .min(1, "Name is required"),
+  name: z.string().min(1, { message: "Name is required" }),
+  gender: z.string().min(1, { message: "Gender is required" }),
   bio: z
-    .string({ required_error: "Bio is required" })
-    .min(1, "Bio is required"),
-  location: z
-    .string({ required_error: "Location is required" })
-    .min(1, "Location is required"),
+    .string()
+    .min(1, { message: "Bio is required" })
+    .max(2000, { message: "Bio must be 2000 characters or less" }),
+  location: z.string().min(1, { message: "Location is required" }),
   hourlyRate: z
-    .number({ required_error: "Hourly rate is required" })
-    .min(1, "Hourly rate is required"),
+    .number()
+    .positive({ message: "Hourly rate must be a positive number" })
+    .refine(val => val >= 0, { message: "Hourly rate is required" }),
   grades: z
-    .array(z.string({ required_error: "Select at least one grade" }))
-    .min(1, "Select at least one grade"),
+    .array(z.string())
+    .min(1, { message: "Select at least one grade" }),
   subjects: z
-    .array(z.string({ required_error: "Select at least one subject" }))
-    .min(1, "Select at least one subject"),
+    .array(z.string())
+    .min(1, { message: "Select at least one subject" }),
   availableOn: z
-    .array(z.string({ required_error: "Select at least one available option" }))
-    .min(1, "Select at least one available option"),
+    .array(z.string())
+    .min(1, { message: "Select at least one available option" }),
 });

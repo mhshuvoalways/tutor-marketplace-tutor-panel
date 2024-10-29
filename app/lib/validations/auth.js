@@ -38,3 +38,20 @@ export const passwordChangeSchema = object({
     .min(8, "Confirm password must be more than 8 characters")
     .max(32, "Confirm password must be less than 32 characters"),
 });
+
+export const forgotPasswordValidation = object({
+  email: string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email"),
+});
+
+export const recoverPasswordValidation = object({
+  newPassword: string({ required_error: "New password is required" })
+    .min(1, "New password is required")
+    .min(8, "New password must be more than 8 characters")
+    .max(32, "New password must be less than 32 characters"),
+  confirmPassword: string({ required_error: "Confirm password is required" })
+    .min(1, "Confirm password is required")
+    .min(8, "Confirm password must be more than 8 characters")
+    .max(32, "Confirm password must be less than 32 characters"),
+});

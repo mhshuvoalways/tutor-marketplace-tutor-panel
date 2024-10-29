@@ -166,7 +166,7 @@ const Index = () => {
             )}
             <div>
               <p className="text-2xl">{data?.name}</p>
-              <p className="text-gray-500">Max file size is 2 MB</p>
+              <p className="text-gray-500">Max file size is 10 MB</p>
             </div>
           </div>
           <UploadImage imageHandler={imageHandler} />
@@ -182,57 +182,61 @@ const Index = () => {
             <p className="text-green-400 text-center">{changeSuccessAvatar}</p>
           )}
         </div>
-        <div className="space-y-5">
-          <p className="text-xl">User Password</p>
-          <div>
-            <Input
-              placeholder="Current password"
-              name={"currentPassword"}
-              changeHandler={changeHandler}
-              value={password.currentPassword}
+        {data?.provider === "credential" && (
+          <div className="space-y-5">
+            <p className="text-xl">User Password</p>
+            <div>
+              <Input
+                placeholder="Current password"
+                name={"currentPassword"}
+                changeHandler={changeHandler}
+                value={password.currentPassword}
+              />
+              {userError.currentPassword && (
+                <p className="text-red-400 text-left">
+                  {userError.currentPassword}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                placeholder="New password"
+                name={"newPassword"}
+                changeHandler={changeHandler}
+                value={password.newPassword}
+              />
+              {userError.newPassword && (
+                <p className="text-red-400 text-left">
+                  {userError.newPassword}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                placeholder="Confirm password"
+                name={"confirmPassword"}
+                changeHandler={changeHandler}
+                value={password.confirmPassword}
+              />
+              {userError.confirmPassword && (
+                <p className="text-red-400 text-left">
+                  {userError.confirmPassword}
+                </p>
+              )}
+            </div>
+            <Button1
+              title={"Change"}
+              onClick={submitHandler}
+              isClicked={isClicked}
             />
-            {userError.currentPassword && (
-              <p className="text-red-400 text-left">
-                {userError.currentPassword}
-              </p>
+            {userError.message && (
+              <p className="text-red-400 text-center">{userError.message}</p>
+            )}
+            {changeSuccess && (
+              <p className="text-green-400 text-center">{changeSuccess}</p>
             )}
           </div>
-          <div>
-            <Input
-              placeholder="New password"
-              name={"newPassword"}
-              changeHandler={changeHandler}
-              value={password.newPassword}
-            />
-            {userError.newPassword && (
-              <p className="text-red-400 text-left">{userError.newPassword}</p>
-            )}
-          </div>
-          <div>
-            <Input
-              placeholder="Confirm password"
-              name={"confirmPassword"}
-              changeHandler={changeHandler}
-              value={password.confirmPassword}
-            />
-            {userError.confirmPassword && (
-              <p className="text-red-400 text-left">
-                {userError.confirmPassword}
-              </p>
-            )}
-          </div>
-          <Button1
-            title={"Change"}
-            onClick={submitHandler}
-            isClicked={isClicked}
-          />
-          {userError.message && (
-            <p className="text-red-400 text-center">{userError.message}</p>
-          )}
-          {changeSuccess && (
-            <p className="text-green-400 text-center">{changeSuccess}</p>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

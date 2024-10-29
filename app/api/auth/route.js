@@ -1,12 +1,17 @@
+import { authConfig } from "@/app/auth.config";
 import serverError from "@/app/lib/helpers/serverError";
 import AuthModel from "@/app/models/AuthModel";
 import bcrypt from "bcrypt";
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
   try {
+    const { auth } = NextAuth(authConfig);
+    const session = await auth();
+    const email = session.user.email;
     const { currentPassword, newPassword } = await request.json();
-    const user = await AuthModel.findOne({ role: "admin" });
+    const user = await AuthModel.findOne({ email });
     if (!user) {
       return new NextResponse(
         JSON.stringify({

@@ -1,11 +1,11 @@
 "use client";
 
-import StudentImage from "@/public/images/tutor.jpg";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import Rating from "react-rating";
 
-const Booking = () => {
+const Booking = ({ booking }) => {
   return (
     <div className="bg-white rounded shadow-sm p-5 overflow-x-auto mt-10">
       <table className="w-full text-nowrap">
@@ -14,88 +14,68 @@ const Booking = () => {
             <th className="text-left border-b pb-5 px-5">Image</th>
             <th className="text-left border-b pb-5 px-5">Name</th>
             <th className="text-left border-b pb-5 px-5">Date</th>
-            <th className="text-left border-b pb-5 px-5">Time</th>
+            <th className="text-left border-b pb-5 px-5">Starting Time</th>
             <th className="text-left border-b pb-5 px-5">Season</th>
+            <th className="text-left border-b pb-5 px-5">Earn</th>
             <th className="text-left border-b pb-5 px-5">Join Link</th>
-            <th className="text-left border-b pb-5 px-5">Reviewed</th>
+            <th className="text-left border-b pb-5 px-5">Review</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="text-left border-b py-5 px-5">
-              <Image src={StudentImage} alt="" className="rounded size-16" />
-            </td>
-            <td className="text-left border-b py-5 px-5">Malcolm Lockyer</td>
-            <td className="text-left border-b py-5 px-5">10-10-2024</td>
-            <td className="text-left border-b py-5 px-5">10:30AM</td>
-            <td className="text-left border-b py-5 px-5">2 hr</td>
-            <td className="text-left border-b py-5 px-5">
-              <Link
-                href={"https://www.mhshuvo.com/"}
-                target="blank"
-                className="hover:underline cursor-pointer"
-              >
-                Click to join
-              </Link>
-            </td>
-            <td className="text-left border-b py-5 px-5">
-              <Rating
-                initialRating={5}
-                emptySymbol="fa-regular fa-star"
-                readonly
-                fullSymbol="fa-solid fa-star"
-                fractions={2}
-                className="text-yellow-500 text-xl"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="text-left border-b py-5 px-5">
-              <Image src={StudentImage} alt="" className="rounded size-16" />
-            </td>
-            <td className="text-left border-b py-5 px-5">Malcolm Lockyer</td>
-            <td className="text-left border-b py-5 px-5">10-10-2024</td>
-            <td className="text-left border-b py-5 px-5">10:30AM</td>
-            <td className="text-left border-b py-5 px-5">2 hr</td>
-            <td className="text-left border-b py-5 px-5">
-              <Link
-                href={"https://www.mhshuvo.com/"}
-                target="blank"
-                className="hover:underline cursor-pointer"
-              >
-                Click to join
-              </Link>
-            </td>
-            <td className="text-left border-b py-5 px-5">Not yet</td>
-          </tr>
-          <tr>
-            <td className="text-left pt-5 px-5">
-              <Image src={StudentImage} alt="" className="rounded size-16" />
-            </td>
-            <td className="text-left pt-5 px-5">Malcolm Lockyer</td>
-            <td className="text-left pt-5 px-5">10-10-2024</td>
-            <td className="text-left pt-5 px-5">10:30AM</td>
-            <td className="text-left pt-5 px-5">2 hr</td>
-            <td className="text-left pt-5 px-5">
-              <Link
-                href={"https://www.mhshuvo.com/"}
-                target="blank"
-                className="hover:underline cursor-pointer"
-              >
-                Click to join
-              </Link>
-            </td>
-            <td className="text-left pt-5 px-5">
-              <Rating
-                initialRating={5}
-                emptySymbol="fa-regular fa-star"
-                readonly
-                fullSymbol="fa-solid fa-star"
-                fractions={2}
-                className="text-yellow-500 text-xl"
-              />
-            </td>
-          </tr>
+          {booking.map((book) => (
+            <tr key={book._id}>
+              <td className="text-left border-b py-5 px-5 align-top">
+                <Image
+                  src={book?.student.avatar?.url}
+                  alt="Not found"
+                  className="rounded size-16"
+                  width={500}
+                  height={500}
+                />
+              </td>
+              <td className="text-left border-b py-5 px-5 align-top">
+                {book?.student.name}
+              </td>
+              <td className="text-left border-b py-5 px-5 align-top">
+                {moment(book.date).format("LL")}
+              </td>
+              <td className="text-left border-b py-5 px-5 align-top">
+                {book.startedTime}
+              </td>
+              <td className="text-left border-b py-5 px-5 align-top">
+                {book.session} hr
+              </td>
+              <td className="text-left border-b py-5 px-5 align-top">
+                ${book?.tutorFee}
+              </td>
+              <td className="text-left border-b py-5 px-5 align-top">
+                <Link
+                  href={`/${book?.tutorJoinLink}`}
+                  target="blank"
+                  className="hover:underline cursor-pointer"
+                >
+                  Click to join
+                </Link>
+              </td>
+              <td className="text-left border-b py-5 px-5 align-top">
+                {book.review ? (
+                  <>
+                    <Rating
+                      initialRating={book.review}
+                      emptySymbol="fa-regular fa-star"
+                      readonly
+                      fullSymbol="fa-solid fa-star"
+                      fractions={2}
+                      className="text-yellow-500 text-xl"
+                    />
+                    <p className="text-wrap">{book?.reviewText}</p>
+                  </>
+                ) : (
+                  <p>Not reviewed yet</p>
+                )}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

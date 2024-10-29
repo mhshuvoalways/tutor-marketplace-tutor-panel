@@ -9,7 +9,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Tim's Tutors",
+  title: "Tutor panel of Tim's Tutor",
   description: "Tim's Tutors is a tutors marketplace",
 };
 

@@ -1,8 +1,8 @@
-import { loginCredential } from "@/app/actions/loginCredential";
+import { loginGoogle } from "@/app/actions/loginGoogle";
+import { authConfig } from "@/app/auth.config";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { authConfig } from "./auth.config";
 
 export const {
   handlers: { GET, POST },
@@ -37,7 +37,7 @@ export const {
   callbacks: {
     async jwt({ token, account }) {
       if (token && account !== "credentials") {
-        loginCredential(token);
+        loginGoogle(token);
       }
       return token;
     },

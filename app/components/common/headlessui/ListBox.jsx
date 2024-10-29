@@ -9,15 +9,15 @@ import {
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 
-function ListboxComponent({ items, availabilityHandler, time }) {
+function ListboxComponent({ value, items, availabilityHandler, time }) {
   const [selected, setSelected] = useState(items[0]);
 
   return (
-    <Listbox value={selected} onChange={setSelected}>
+    <Listbox value={value || selected} onChange={setSelected}>
       <ListboxButton
-        className={`text-nowrap border w-full text-left rounded py-2 px-2 flex items-center justify-between bg-white`}
+        className={`text-nowrap border w-full text-left rounded py-2 px-2 flex items-center justify-between bg-white min-w-20`}
       >
-        {selected}
+        {value || selected}
         <ChevronDownIcon className="size-4" />
       </ListboxButton>
       <ListboxOptions

@@ -15,6 +15,10 @@ const profileModel = new Schema(
       type: String,
       trim: true,
     },
+    gender: {
+      type: String,
+      trim: true,
+    },
     bio: {
       type: String,
       trim: true,
@@ -22,6 +26,10 @@ const profileModel = new Schema(
     location: {
       type: String,
       trim: true,
+    },
+    session: {
+      type: Number,
+      default: 1,
     },
     hourlyRate: {
       type: Number,
@@ -39,10 +47,19 @@ const profileModel = new Schema(
       },
     ],
     availableOn: [],
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    balance: {
+      type: Number,
+      default: 0,
+    },
+    tutorStripeAccountId: String,
   },
   {
     timestamps: true,
   }
 );
 
-export default models.tutorProfile ?? model("tutorProfile", profileModel);
+export default models.tutorprofile ?? model("tutorprofile", profileModel);

@@ -58,7 +58,9 @@ const Index = ({ children }) => {
               />
               <div>
                 <p className="text-sm">Balance</p>
-                <p className="text-green-600 text-end font-semibold">$400</p>
+                <p className="text-green-600 text-end font-semibold">
+                  ${data?.balance}
+                </p>
               </div>
             </div>
           </div>

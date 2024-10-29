@@ -1,6 +1,7 @@
 "use client";
 
 import Button1 from "@/app/components/common/button/Button";
+import Listbox from "@/app/components/common/headlessui/ListBox";
 import AutoComplete from "@/app/components/common/input/AutoComplete";
 import Input from "@/app/components/common/input/Input";
 import UserAccount from "@/app/components/myAccount/user";
@@ -10,12 +11,14 @@ import { MapPin, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const methods = ["Online", "Offline", "Student place", "Tutor place"];
+const genders = ["Male", "Female", "Both"];
 
 const Index = () => {
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [userInfo, setUserInfo] = useState({
     name: "",
+    gender: genders[0],
     bio: "",
     hourlyRate: "",
   });
@@ -31,6 +34,7 @@ const Index = () => {
   const [methodsError, setMethodsError] = useState("");
   const [userInfoError, setUserInfoError] = useState({
     name: "",
+    gender: "",
     bio: "",
     hourlyRate: "",
   });
@@ -106,18 +110,29 @@ const Index = () => {
     });
   };
 
+  const genderHandler = (value) => {
+    setUserInfoError({
+      ...userInfoError,
+      gender: "",
+    });
+    setUserInfo({
+      ...userInfo,
+      gender: value,
+    });
+  };
+
   const addressHandler = (value) => {
     setLocation(value);
     setLocationError("");
   };
 
-  const onSubmitHandler = async (event) => {
-    event.preventDefault();
+  const onSubmitHandler = async () => {
     setIsClicked(true);
     setSuccessMessage("");
     try {
       const obj = {
         name: userInfo.name,
+        gender: userInfo.gender,
         bio: userInfo.bio,
         location: location,
         hourlyRate: Number(userInfo.hourlyRate || 0),
@@ -140,6 +155,7 @@ const Index = () => {
         setMethodsError(result.availableOn);
         setUserInfoError({
           name: result.name,
+          gender: result.gender,
           bio: result.bio,
           hourlyRate: result.hourlyRate,
         });
@@ -156,6 +172,7 @@ const Index = () => {
       setMethodsError(formattedErrors.availableOn);
       setUserInfoError({
         name: formattedErrors.name,
+        gender: formattedErrors.gender,
         bio: formattedErrors.bio,
         hourlyRate: formattedErrors.hourlyRate,
       });
@@ -170,6 +187,7 @@ const Index = () => {
       setSelectedMethods(data.availableOn);
       setUserInfo({
         name: data.name,
+        gender: data.gender || genders[0],
         bio: data.bio,
         hourlyRate: data.hourlyRate,
       });
@@ -180,10 +198,7 @@ const Index = () => {
   return (
     <div className="space-y-10">
       <UserAccount />
-      <form
-        className="bg-white rounded shadow-sm p-5"
-        onSubmit={onSubmitHandler}
-      >
+      <div className="bg-white rounded shadow-sm p-5">
         <p className="text-2xl">User information</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
           <div className="space-y-5">
@@ -198,6 +213,21 @@ const Index = () => {
                 />
                 {userInfoError.name && (
                   <p className="text-red-400 text-left">{userInfoError.name}</p>
+                )}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label>Your Gender</label>
+              <div>
+                <Listbox
+                  items={genders}
+                  availabilityHandler={genderHandler}
+                  value={userInfo.gender}
+                />
+                {userInfoError.gender && (
+                  <p className="text-red-400 text-left">
+                    {userInfoError.gender}
+                  </p>
                 )}
               </div>
             </div>
@@ -334,12 +364,16 @@ const Index = () => {
           </div>
         </div>
         <div className="mt-5 w-32 ml-auto">
-          <Button1 title={"Change"} isClicked={isClicked} />
+          <Button1
+            title={"Change"}
+            isClicked={isClicked}
+            onClick={onSubmitHandler}
+          />
         </div>
         {successMessage && (
           <p className="text-green-400 text-center">{successMessage}</p>
         )}
-      </form>
+      </div>
     </div>
   );
 };
