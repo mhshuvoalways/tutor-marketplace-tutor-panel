@@ -50,7 +50,7 @@ const Booking = ({ booking }) => {
               </td>
               <td className="text-left border-b py-5 px-5 align-top">
                 <Link
-                  href={`/${book?.tutorJoinLink}`}
+                  href={`${book?.tutorJoinLink}`}
                   target="blank"
                   className="hover:underline cursor-pointer"
                 >
