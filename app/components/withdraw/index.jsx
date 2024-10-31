@@ -72,7 +72,7 @@ const Withdraw = () => {
         </div>
         <div className="bg-white p-5 shadow-sm w-full">
           <p>Available for withdraw</p>
-          <p className="text-2xl mt-2">${data?.balance}</p>
+          <p className="text-2xl mt-2">${data?.balance?.toFixed(2)}</p>
           <Button1
             title={"Withdraw"}
             className={`mt-5 ${data?.balance > 0 ? "" : "cursor-not-allowed"}`}

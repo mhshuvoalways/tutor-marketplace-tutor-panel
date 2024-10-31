@@ -59,7 +59,7 @@ const Index = ({ children }) => {
               <div>
                 <p className="text-sm">Balance</p>
                 <p className="text-green-600 text-end font-semibold">
-                  ${data?.balance}
+                  ${data?.balance?.toFixed(2)}
                 </p>
               </div>
             </div>

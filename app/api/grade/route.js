@@ -1,6 +1,7 @@
 import GradeModel from "@/app/models/GradeModel";
 import { dbConnect } from "@/app/services/mongodb";
 import { NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
 
 export const GET = async () => {
   try {
