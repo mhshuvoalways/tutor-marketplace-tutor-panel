@@ -1,4 +1,4 @@
-import verifyEmailTemplate from "@/lib/mail/verifyEmailTemplate";
+import verifyEmailTemplate from "@/app/lib/mail/verifyEmailTemplate";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
 
