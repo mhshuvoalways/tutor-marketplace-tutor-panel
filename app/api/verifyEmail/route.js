@@ -1,13 +1,10 @@
-import { dbConnect } from "@/db/mongodb";
-import AuthModel from "@/models/AuthModel";
-import serverError from "@/services/serverError";
+import { dbConnect } from "@/app/services/mongodb";
+import AuthModel from "@/app/models/AuthModel";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
   const { token } = await request.json();
-  console.log(token);
-  
   try {
     const result = await jwt.verify(token, process.env.AUTH_SECRET);
     try {
@@ -19,9 +16,16 @@ export const POST = async (request) => {
       );
       return new NextResponse(JSON.stringify(authRes), { status: 200 });
     } catch {
-      return serverError();
+      return new NextResponse(
+        JSON.stringify({ message: "User already exit!" }),
+        {
+          status: 400,
+        }
+      );
     }
   } catch {
-    return serverError();
+    return new NextResponse(JSON.stringify({ message: "User already exit!" }), {
+      status: 400,
+    });
   }
 };
