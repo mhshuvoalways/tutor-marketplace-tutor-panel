@@ -8,7 +8,6 @@ import GoogleIcon from "@/public/icons/google.png";
 import LoginImage from "@/public/images/login.png";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const SignUpPage = () => {
@@ -25,9 +24,9 @@ const SignUpPage = () => {
     message: "",
   });
 
-  const [isClicked, setIsClicked] = useState(false);
+  const [success, setSuccess] = useState("");
 
-  const router = useRouter();
+  const [isClicked, setIsClicked] = useState(false);
 
   const changeHandler = (event) => {
     setUser({
@@ -49,7 +48,7 @@ const SignUpPage = () => {
       });
       setIsClicked(false);
       if (response.status === 200) {
-        router.push("/login");
+        setSuccess("Please check your email to verify your account!");
       } else {
         setUserError(await response.json());
       }
@@ -138,6 +137,7 @@ const SignUpPage = () => {
               <Image src={GoogleIcon} alt="" className="size-5" />
               <button className="">Login with google</button>
             </div>
+            {success && <p className="text-green-400 text-center">{success}</p>}
             {userError.message && (
               <p className="text-red-400 text-center">{userError.message}</p>
             )}

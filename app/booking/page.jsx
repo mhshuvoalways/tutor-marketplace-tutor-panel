@@ -13,7 +13,10 @@ const Index = () => {
     async function fetchBooking() {
       if (!booking.length) {
         const response = await fetch("/api/booking", { method: "GET" });
-        setBooking(await response.json());
+        const result = await response.json();
+        if (response.status === 200) {
+          setBooking(result);
+        }
       }
     }
     fetchBooking();

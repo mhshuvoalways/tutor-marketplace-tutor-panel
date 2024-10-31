@@ -16,11 +16,13 @@ const Index = async () => {
         cache: "no-store",
       }
     );
-    const result = (await response.json()) || [];
-    booking = result;
-    result.forEach((element) => {
-      totalEarning += element.tutorFee;
-    });
+    if (response.status === 200) {
+      const result = (await response.json()) || [];
+      booking = result;
+      result.forEach((element) => {
+        totalEarning += element.tutorFee;
+      });
+    }
   }
 
   return (

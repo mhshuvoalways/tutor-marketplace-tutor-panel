@@ -13,7 +13,16 @@ export const POST = async (request) => {
     if (user && user.provider === "credential" && user.role === "tutor") {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
-        return new NextResponse(JSON.stringify(user), { status: 200 });
+        if (user && user.isVerified) {
+          return new NextResponse(JSON.stringify(user), { status: 200 });
+        } else {
+          return new NextResponse(
+            JSON.stringify({ message: "Please verify your account!" }),
+            {
+              status: 400,
+            }
+          );
+        }
       } else {
         return new NextResponse(
           JSON.stringify({ message: "Email or Password is not correct" }),

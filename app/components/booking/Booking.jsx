@@ -15,7 +15,7 @@ const Booking = ({ booking }) => {
             <th className="text-left border-b pb-5 px-5">Name</th>
             <th className="text-left border-b pb-5 px-5">Date</th>
             <th className="text-left border-b pb-5 px-5">Starting Time</th>
-            <th className="text-left border-b pb-5 px-5">Season</th>
+            <th className="text-left border-b pb-5 px-5">Session</th>
             <th className="text-left border-b pb-5 px-5">Earn</th>
             <th className="text-left border-b pb-5 px-5">Join Link</th>
             <th className="text-left border-b pb-5 px-5">Review</th>

@@ -13,7 +13,7 @@ const authModel = new Schema(
       min: 6,
       max: 20,
     },
-    isVerfied: {
+    isVerified: {
       type: String,
       default: true,
     },

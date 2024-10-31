@@ -55,6 +55,10 @@ const profileModel = new Schema(
       type: Number,
       default: 0,
     },
+    percentage: {
+      type: Number,
+      default: 0,
+    },
     tutorStripeAccountId: String,
   },
   {
