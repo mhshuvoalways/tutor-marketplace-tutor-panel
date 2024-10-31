@@ -12,6 +12,10 @@ export const signUpSchema = object({
     .min(1, "Password is required")
     .min(8, "Password must be more than 8 characters")
     .max(32, "Password must be less than 32 characters"),
+  recaptcha: string({ required_error: "Recaptcha is required" }).min(
+    1,
+    "Recaptcha is required"
+  ),
 });
 
 export const signInSchema = object({

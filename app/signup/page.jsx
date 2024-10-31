@@ -3,6 +3,7 @@
 import { socialLogin } from "@/app/actions";
 import Button from "@/app/components/common/button/Button";
 import Input from "@/app/components/common/input/Input";
+import Recaptcha from "@/app/components/common/input/Recaptcha";
 import { signUpSchema } from "@/app/lib/validations/auth";
 import GoogleIcon from "@/public/icons/google.png";
 import LoginImage from "@/public/images/login.png";
@@ -15,12 +16,14 @@ const SignUpPage = () => {
     name: "",
     email: "",
     password: "",
+    recaptcha: "",
   });
 
   const [userError, setUserError] = useState({
     name: "",
     email: "",
     password: "",
+    recaptcha: "",
     message: "",
   });
 
@@ -29,9 +32,24 @@ const SignUpPage = () => {
   const [isClicked, setIsClicked] = useState(false);
 
   const changeHandler = (event) => {
+    setUserError({
+      ...userError,
+      [event.target.name]: "",
+    });
     setUser({
       ...user,
       [event.target.name]: event.target.value,
+    });
+  };
+
+  const recaptchaOnChange = (value) => {
+    setUserError({
+      ...userError,
+      recaptcha: "",
+    });
+    setUser({
+      ...user,
+      recaptcha: value,
     });
   };
 
@@ -39,18 +57,22 @@ const SignUpPage = () => {
     setIsClicked(true);
     try {
       await signUpSchema.parseAsync(user);
-      const response = await fetch(`/api/signup`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      setIsClicked(false);
-      if (response.status === 200) {
-        setSuccess("Please check your email to verify your account!");
-      } else {
-        setUserError(await response.json());
+      try {
+        const response = await fetch(`/api/signup`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(user),
+        });
+        setIsClicked(false);
+        if (response.status === 200) {
+          setSuccess("Please check your email to verify your account!");
+        } else {
+          setUserError(await response.json());
+        }
+      } catch (error) {
+        setUserError(error.message);
       }
     } catch (errors) {
       setIsClicked(false);
@@ -61,7 +83,7 @@ const SignUpPage = () => {
       setUserError(formattedErrors);
     }
   };
-
+  
   return (
     <div className="flex items-center">
       <div className="bg-slate-800 w-6/12 h-screen hidden md:flex items-center justify-center">
@@ -106,6 +128,12 @@ const SignUpPage = () => {
               />
               {userError.password && (
                 <p className="text-red-400 text-left">{userError.password}</p>
+              )}
+            </div>
+            <div>
+              <Recaptcha onChange={recaptchaOnChange} />
+              {userError.recaptcha && (
+                <p className="text-red-400 text-left">{userError.recaptcha}</p>
               )}
             </div>
             <div className="flex justify-between gap-2">
