@@ -33,7 +33,7 @@ const Index = async () => {
       </div>
       <div className="bg-white rounded py-10 px-5 text-center shadow-sm">
         <p className="opacity-80">Total Earning</p>
-        <p className="text-2xl mt-5">{totalEarning}</p>
+        <p className="text-2xl mt-5">{totalEarning.toFixed(2)}</p>
       </div>
     </div>
   );

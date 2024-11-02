@@ -55,15 +55,21 @@ const SignUpPage = () => {
 
   const submitHandler = async () => {
     setIsClicked(true);
+    const obj = {
+      name: user.name,
+      email: user.email.toLowerCase(),
+      password: user.password,
+      recaptcha: user.recaptcha,
+    };
     try {
-      await signUpSchema.parseAsync(user);
+      await signUpSchema.parseAsync(obj);
       try {
         const response = await fetch(`/api/signup`, {
           method: "POST",
           headers: {
             "content-type": "application/json",
           },
-          body: JSON.stringify(user),
+          body: JSON.stringify(obj),
         });
         setIsClicked(false);
         if (response.status === 200) {

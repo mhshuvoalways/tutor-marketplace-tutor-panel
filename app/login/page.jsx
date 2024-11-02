@@ -33,18 +33,22 @@ const SignIn = () => {
 
   const submitHandler = async () => {
     setIsClicked(true);
+    const obj = {
+      email: user.email.toLowerCase(),
+      password: user.password,
+    };
     try {
-      await signInSchema.parseAsync(user);
+      await signInSchema.parseAsync(obj);
       const response = await fetch(`/api/signin`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(obj),
       });
       setIsClicked(false);
       if (response.status === 200) {
-        await credentialLogin(user);
+        await credentialLogin(obj);
       } else {
         setUserError(await response.json());
       }
