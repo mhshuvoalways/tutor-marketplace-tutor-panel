@@ -10,7 +10,7 @@ import { myAccountSchema } from "@/app/lib/validations/myAccount";
 import { MapPin, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const methods = ["Online", "Offline", "Student place", "Tutor place"];
+const methods = ["Online", "Student place", "Tutor place"];
 const genders = ["Male", "Female", "Both"];
 
 const Index = () => {
@@ -342,9 +342,6 @@ const Index = () => {
                     >
                       {method === "Online" && (
                         <Video className="text-red-400" />
-                      )}
-                      {method === "Offline" && (
-                        <MapPin className="text-blue-400" />
                       )}
                       {method === "Tutor place" && (
                         <MapPin className="text-red-400" />

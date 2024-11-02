@@ -12,7 +12,7 @@ const Input = ({
       className={`outline-0 border rounded py-2 px-2 w-full transition ${className}`}
       placeholder={placeholder}
       name={name}
-      value={value}
+      value={type === "number" ? value >= 0 && value : value}
       onChange={changeHandler}
     />
   );
