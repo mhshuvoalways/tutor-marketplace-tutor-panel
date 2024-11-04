@@ -115,9 +115,9 @@ const Index = () => {
         time: [],
       }));
       data.forEach((item) => {
-        const { _id, day, startedTime, endedTime } = item;
+        const { _id, day, startedTime, endedTime, createdAt } = item;
         const dayObj = result.find((d) => d.day === day);
-        dayObj.time.push({ _id, startedTime, endedTime });
+        dayObj.time.push({ _id, startedTime, endedTime, createdAt });
       });
       setAvail(result);
     }

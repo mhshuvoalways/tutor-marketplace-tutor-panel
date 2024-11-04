@@ -1,6 +1,8 @@
-import { CircleMinus, CirclePlus } from "lucide-react";
+import { CircleMinus, CirclePlus, LockIcon } from "lucide-react";
 
 const index = ({ avail, setIsOpen, availabilityDayHandler, deleteHandler }) => {
+  console.log(avail);
+
   return (
     <div className="bg-white rounded shadow-sm p-5 overflow-x-auto">
       <table className="w-full text-nowrap">
@@ -24,10 +26,17 @@ const index = ({ avail, setIsOpen, availabilityDayHandler, deleteHandler }) => {
                         <p>-</p>
                         <p>{t.endedTime}</p>
                       </div>
-                      <CircleMinus
-                        className="cursor-pointer hover:text-primary"
-                        onClick={() => deleteHandler(t._id)}
-                      />
+                      {new Date(t.createdAt) <
+                      new Date(Date.now() - 24 * 60 * 60 * 1000) ? (
+                        <CircleMinus
+                          className="cursor-pointer hover:text-primary size-6"
+                          onClick={() => deleteHandler(t._id)}
+                        />
+                      ) : (
+                        <div title="You can't modify within 24 hours">
+                          <LockIcon className="size-6" />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
