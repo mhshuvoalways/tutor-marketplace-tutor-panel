@@ -1,7 +1,6 @@
 import { authConfig } from "@/app/auth.config";
 import AuthModel from "@/app/models/AuthModel";
 import AvailabilityModel from "@/app/models/AvailabilityModel";
-import ProfileModel from "@/app/models/ProfileModel";
 import { dbConnect } from "@/app/services/mongodb";
 import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
@@ -56,20 +55,15 @@ export const POST = async (request) => {
 };
 
 export const PUT = async (request) => {
-  const { mySession } = await request.json();
+  const { availId, startedTime, endedTime } = await request.json();
   try {
     await dbConnect();
-    const { auth } = NextAuth(authConfig);
-    const session = await auth();
-    const email = session.user.email;
-    const findUser = await AuthModel.findOne({ email });
-    if (findUser) {
-      await ProfileModel.findOneAndUpdate(
-        { user: findUser._id },
-        { session: mySession }
-      );
-      return new NextResponse(JSON.stringify("Updated!"), { status: 200 });
-    }
+    const userObj = {
+      startedTime,
+      endedTime,
+    };
+    await AvailabilityModel.findOneAndUpdate({ _id: availId }, userObj);
+    return new NextResponse(JSON.stringify("Updated!"), { status: 200 });
   } catch {
     return new NextResponse(
       JSON.stringify({ message: "Server error occured!" }),

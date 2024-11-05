@@ -16,6 +16,7 @@ const Index = () => {
   const [mySessionError, setMySessionError] = useState({});
   const [mySessionSuccess, setMySessionSuccess] = useState();
   const [availability, setAvailablility] = useState({
+    availId: "",
     day: "",
     startedTime: allAvailability[0],
     endedTime: allAvailability[4],
@@ -36,6 +37,7 @@ const Index = () => {
 
   const availabilityDayHandler = (day) => {
     setAvailablility({
+      availId: "",
       day: day,
       startedTime: allAvailability[0],
       endedTime: allAvailability[4],
@@ -50,6 +52,7 @@ const Index = () => {
 
   const availabilityHandler = (time, item) => {
     setAvailablility((prevAvailability) => ({
+      availId: "",
       ...prevAvailability,
       [time]: item,
     }));
@@ -58,6 +61,8 @@ const Index = () => {
       [time]: "",
     });
   };
+
+  const isUpdate = availability.availId ? true : false;
 
   const onSubmitHandler = async () => {
     const sessionTime = timeDifference(
@@ -69,7 +74,7 @@ const Index = () => {
       try {
         availabilityValidation.parse(availability);
         const response = await fetch("/api/availability", {
-          method: "POST",
+          method: isUpdate ? "PUT" : "POST",
           body: JSON.stringify(availability),
         });
         setIsClicked(false);
@@ -137,6 +142,17 @@ const Index = () => {
     }
   };
 
+  const editChange = (editId, day, startedTime, endedTime) => {
+    setIsOpen(!isOpen);
+    setAvailablility({
+      availId: editId,
+      day: day,
+      startedTime,
+      endedTime,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
+  };
+
   const times = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   const timeHandler = (_, time) => {
@@ -145,7 +161,7 @@ const Index = () => {
 
   const sessionSubmitHandler = async () => {
     setIsClicked(true);
-    const response = await fetch("/api/availability", {
+    const response = await fetch("/api/availability/sessionUpdate", {
       method: "PUT",
       body: JSON.stringify({ mySession }),
     });
@@ -198,11 +214,12 @@ const Index = () => {
         setIsOpen={setIsOpen}
         availabilityDayHandler={availabilityDayHandler}
         deleteHandler={deleteHandler}
+        editChange={editChange}
       />
       <Dialog
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        dialogTitle={"Add more"}
+        dialogTitle={isUpdate ? "Update" : "Add more"}
         submitHandler={onSubmitHandler}
         isClicked={isClicked}
       >
