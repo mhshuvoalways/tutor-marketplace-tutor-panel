@@ -1,7 +1,6 @@
 "use client";
 
 import Button1 from "@/app/components/common/button/Button";
-import Listbox from "@/app/components/common/headlessui/ListBox";
 import AutoComplete from "@/app/components/common/input/AutoComplete";
 import Input from "@/app/components/common/input/Input";
 import UserAccount from "@/app/components/myAccount/user";
@@ -10,19 +9,24 @@ import { myAccountSchema } from "@/app/lib/validations/myAccount";
 import { MapPin, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const methods = ["Online", "Student place", "Tutor place"];
-const genders = ["Male", "Female", "Both"];
+const methods = ["Online", "In-Person"];
 
 const Index = () => {
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [userInfo, setUserInfo] = useState({
     name: "",
-    gender: genders[0],
     bio: "",
     hourlyRate: "",
   });
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState({
+    address: "",
+    lat: "",
+    lng: "",
+  });
+
+  const [miles, setMiles] = useState("");
+  const [milesError, setmilesError] = useState("");
 
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
@@ -34,11 +38,14 @@ const Index = () => {
   const [methodsError, setMethodsError] = useState("");
   const [userInfoError, setUserInfoError] = useState({
     name: "",
-    gender: "",
     bio: "",
     hourlyRate: "",
   });
-  const [locationError, setLocationError] = useState("");
+  const [locationError, setLocationError] = useState({
+    address: "",
+    lat: "",
+    lng: "",
+  });
   const [successMessage, setSuccessMessage] = useState("");
 
   const { data } = useAppSelector((store) => store.myAccount);
@@ -110,20 +117,22 @@ const Index = () => {
     });
   };
 
-  const genderHandler = (value) => {
-    setUserInfoError({
-      ...userInfoError,
-      gender: "",
+  const addressHandler = (value) => {
+    setLocation({
+      address: value?.formatted_address,
+      lat: value?.geometry.location.lat(),
+      lng: value?.geometry.location.lng(),
     });
-    setUserInfo({
-      ...userInfo,
-      gender: value,
+    setLocationError({
+      address: "",
+      lat: "",
+      lng: "",
     });
   };
 
-  const addressHandler = (value) => {
-    setLocation(value);
-    setLocationError("");
+  const milesHandler = (event) => {
+    setmilesError("");
+    setMiles(event.target.value);
   };
 
   const onSubmitHandler = async () => {
@@ -132,15 +141,17 @@ const Index = () => {
     try {
       const obj = {
         name: userInfo.name,
-        gender: userInfo.gender,
         bio: userInfo.bio,
-        location: location,
+        address: location.address,
+        lat: location.lat,
+        lng: location.lng,
+        miles: Number(miles) || 0,
         hourlyRate: Number(userInfo.hourlyRate || 0),
         grades: selectedGrades.map((el) => el._id),
         subjects: selectedSubjects.map((el) => el._id),
         availableOn: selectedMethods.map((el) => el),
       };
-      myAccountSchema.parse(obj);
+      myAccountSchema(selectedMethods.includes("In-Person")).parse(obj);
       const response = await fetch("/api/myAccount", {
         method: "POST",
         body: JSON.stringify(obj),
@@ -155,11 +166,11 @@ const Index = () => {
         setMethodsError(result.availableOn);
         setUserInfoError({
           name: result.name,
-          gender: result.gender,
           bio: result.bio,
           hourlyRate: result.hourlyRate,
         });
         setLocationError(result.location);
+        setmilesError(result.location.miles);
       }
     } catch (errors) {
       setIsClicked(false);
@@ -167,16 +178,14 @@ const Index = () => {
         acc[error.path[0]] = error.message;
         return acc;
       }, {});
-      setGradesError(formattedErrors.grades);
-      setSubjectsError(formattedErrors.subjects);
-      setMethodsError(formattedErrors.availableOn);
-      setUserInfoError({
-        name: formattedErrors.name,
-        gender: formattedErrors.gender,
-        bio: formattedErrors.bio,
-        hourlyRate: formattedErrors.hourlyRate,
-      });
-      setLocationError(formattedErrors.location);
+      if (formattedErrors) {
+        setGradesError(formattedErrors.grades);
+        setSubjectsError(formattedErrors.subjects);
+        setMethodsError(formattedErrors.availableOn);
+        setmilesError(formattedErrors.miles);
+        setUserInfoError(formattedErrors);
+        setLocationError(formattedErrors);
+      }
     }
   };
 
@@ -187,11 +196,11 @@ const Index = () => {
       setSelectedMethods(data.availableOn);
       setUserInfo({
         name: data.name,
-        gender: data.gender || genders[0],
         bio: data.bio,
         hourlyRate: data.hourlyRate,
       });
       setLocation(data.location);
+      setMiles(data.miles);
     }
   }, [data]);
 
@@ -217,32 +226,38 @@ const Index = () => {
               </div>
             </div>
             <div className="space-y-1">
-              <label>Your Gender</label>
-              <div>
-                <Listbox
-                  items={genders}
-                  availabilityHandler={genderHandler}
-                  value={userInfo.gender}
-                />
-                {userInfoError.gender && (
-                  <p className="text-red-400 text-left">
-                    {userInfoError.gender}
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="space-y-1">
               <label>Your Location</label>
               <div>
                 <AutoComplete
                   addressHandler={addressHandler}
-                  defaultValue={location}
+                  defaultValue={location?.address}
                 />
-                {locationError && (
-                  <p className="text-red-400 text-left">{locationError}</p>
+                {locationError.address && (
+                  <p className="text-red-400 text-left">
+                    {locationError.address}
+                  </p>
                 )}
               </div>
             </div>
+            {selectedMethods.includes("In-Person") && (
+              <div className="space-y-1">
+                <label>
+                  Enter miles as far as you can go for in-person tutoring
+                </label>
+                <div>
+                  <Input
+                    placeholder="100"
+                    type="number"
+                    name={"miles"}
+                    changeHandler={milesHandler}
+                    value={miles}
+                  />
+                  {milesError && (
+                    <p className="text-red-400 text-left">{milesError}</p>
+                  )}
+                </div>
+              </div>
+            )}
             <div className="space-y-1">
               <label>Your hourly rate</label>
               <div>
@@ -327,7 +342,7 @@ const Index = () => {
             </div>
             <div>
               <label>Available on</label>
-              <div className="flex items-center flex-wrap 2xl:flex-nowrap gap-3 text-nowrap mt-1">
+              <div className="flex items-center flex-wrap sm:flex-nowrap gap-3 text-nowrap mt-1">
                 {methods.map((method) => {
                   const isSelected = selectedMethods?.find(
                     (el) => el === method
@@ -343,12 +358,10 @@ const Index = () => {
                       {method === "Online" && (
                         <Video className="text-red-400" />
                       )}
-                      {method === "Tutor place" && (
+                      {method === "In-Person" && (
                         <MapPin className="text-red-400" />
                       )}
-                      {method === "Student place" && (
-                        <MapPin className="text-red-400" />
-                      )}
+
                       <p>{method}</p>
                     </div>
                   );

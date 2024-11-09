@@ -10,30 +10,37 @@ import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
-  await dbConnect();
-  const { auth } = NextAuth(authConfig);
-  const session = await auth();
-  const email = session.user.email;
-  const {
-    name,
-    bio,
-    location,
-    hourlyRate,
-    grades,
-    subjects,
-    availableOn,
-    gender,
-  } = await request.json();
   try {
-    const profileObj = {
+    await dbConnect();
+    const { auth } = NextAuth(authConfig);
+    const session = await auth();
+    const email = session.user.email;
+    const {
       name,
       bio,
-      location,
+      address,
+      lat,
+      lng,
+      miles,
       hourlyRate,
       grades,
       subjects,
       availableOn,
-      gender,
+    } = await request.json();
+
+    const profileObj = {
+      name,
+      bio,
+      location: {
+        address,
+        lat,
+        lng,
+      },
+      miles,
+      hourlyRate,
+      grades,
+      subjects,
+      availableOn,
     };
     const authResponse = await AuthModel.findOne({ email });
     const response = await TutorProfileModel.findOneAndUpdate(

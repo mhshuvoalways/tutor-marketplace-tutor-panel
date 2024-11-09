@@ -15,18 +15,16 @@ const profileModel = new Schema(
       type: String,
       trim: true,
     },
-    gender: {
-      type: String,
-      trim: true,
-    },
     bio: {
       type: String,
       trim: true,
     },
     location: {
-      type: String,
-      trim: true,
+      address: String,
+      lat: Number,
+      lng: Number,
     },
+    miles: Number,
     session: {
       type: Number,
       default: 1,
