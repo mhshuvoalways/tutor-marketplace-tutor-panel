@@ -1,13 +1,13 @@
 "use client";
 
 import Button1 from "@/app/components/common/button/Button";
-import AutoComplete from "@/app/components/common/input/AutoComplete";
 import Input from "@/app/components/common/input/Input";
 import UserAccount from "@/app/components/myAccount/user";
 import { useAppSelector } from "@/app/lib/store/hook";
 import { myAccountSchema } from "@/app/lib/validations/myAccount";
 import { MapPin, Video } from "lucide-react";
 import { useEffect, useState } from "react";
+import ReactGooglePlaceSuggest from "react-google-place-suggest";
 
 const methods = ["Online", "In-Person"];
 
@@ -228,9 +228,15 @@ const Index = () => {
             <div className="space-y-1">
               <label>Your Location</label>
               <div>
-                <AutoComplete
-                  addressHandler={addressHandler}
-                  defaultValue={location?.address}
+                <ReactGooglePlaceSuggest
+                  handlePlaceSelect={addressHandler}
+                  apiKey={process.env.GOOGLE_MAPS_API_KEY}
+                  inputClass={{
+                    padding: "p-2",
+                    width: "100%",
+                    borderWidth: "1px",
+                    borderRadius: "4px",
+                  }}
                 />
                 {locationError.address && (
                   <p className="text-red-400 text-left">
