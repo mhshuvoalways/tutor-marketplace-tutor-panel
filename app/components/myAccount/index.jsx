@@ -7,7 +7,7 @@ import { useAppSelector } from "@/app/lib/store/hook";
 import { myAccountSchema } from "@/app/lib/validations/myAccount";
 import { MapPin, Video } from "lucide-react";
 import { useEffect, useState } from "react";
-import ReactGooglePlaceSuggest from "react-google-place-suggest";
+import ReactGooglePlaceSuggest from "react-google-location-suggest";
 
 const methods = ["Online", "In-Person"];
 
@@ -120,8 +120,8 @@ const Index = () => {
   const addressHandler = (value) => {
     setLocation({
       address: value?.formatted_address,
-      lat: value?.geometry.location.lat(),
-      lng: value?.geometry.location.lng(),
+      lat: value?.geometry.location.lat,
+      lng: value?.geometry.location.lng,
     });
     setLocationError({
       address: "",
@@ -229,7 +229,8 @@ const Index = () => {
               <label>Your Location</label>
               <div>
                 <ReactGooglePlaceSuggest
-                  handlePlaceSelect={addressHandler}
+                  handleLocationSelect={addressHandler}
+                  placeholder="Enter address"
                   apiKey={process.env.GOOGLE_MAPS_API_KEY}
                   inputClass={{
                     padding: "p-2",
