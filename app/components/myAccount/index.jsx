@@ -231,6 +231,7 @@ const Index = () => {
                 <ReactGooglePlaceSuggest
                   handleLocationSelect={addressHandler}
                   placeholder="Enter address"
+                  defaultValue={location.address}
                   apiKey={process.env.GOOGLE_MAPS_API_KEY}
                   inputClass={{
                     padding: "p-2",
