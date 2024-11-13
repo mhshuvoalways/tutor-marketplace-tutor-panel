@@ -3,6 +3,7 @@
 const nextConfig = {
   env: {
     GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+    CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
   },
   reactStrictMode: false,
   images: {
