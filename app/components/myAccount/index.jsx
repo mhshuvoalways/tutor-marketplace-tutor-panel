@@ -46,6 +46,7 @@ const Index = () => {
     lat: "",
     lng: "",
   });
+  const [tempLocation, setTemplocation] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
   const { data } = useAppSelector((store) => store.myAccount);
@@ -130,6 +131,10 @@ const Index = () => {
     });
   };
 
+  const onChangeHandlerLocation = (value) => {
+    setTemplocation(value);
+  };
+
   const milesHandler = (event) => {
     setmilesError("");
     setMiles(event.target.value);
@@ -142,7 +147,7 @@ const Index = () => {
       const obj = {
         name: userInfo.name,
         bio: userInfo.bio,
-        address: location.address,
+        address: tempLocation,
         lat: location.lat,
         lng: location.lng,
         miles: Number(miles) || 0,
@@ -230,6 +235,7 @@ const Index = () => {
               <div>
                 <ReactGooglePlaceSuggest
                   handleLocationSelect={addressHandler}
+                  onChangeHandler={onChangeHandlerLocation}
                   placeholder="Enter address"
                   defaultValue={location.address}
                   apiKey={process.env.GOOGLE_MAPS_API_KEY}
